@@ -1,0 +1,163 @@
+@* src/FlexibleMonitoringDashboard.Client/Components/Dashboard/ChartWidget.razor *@
+
+<MudPaper Elevation="2" Class="pa-3" Style="border-radius: 8px; position: relative;">
+    @* Widget header *@
+    <MudStack Row="true" AlignItems="AlignItems.Center" Class="mb-2">
+        <MudStack Spacing="0" Style="flex: 1; min-width: 0;">
+            <MudText Typo="Typo.subtitle1" Style="font-weight: 500;">
+                @WidgetConfig.Title
+            </MudText>
+            @if (!string.IsNullOrWhiteSpace(WidgetConfig.Description))
+            {
+                <MudText Typo="Typo.caption" Style="opacity: 0.6;">
+                    @WidgetConfig.Description
+                </MudText>
+            }
+        </MudStack>
+
+        @* Widget toolbar *@
+        <MudMenu Icon="@Icons.Material.Filled.MoreVert" Size="MudBlazor.Size.Small" Dense="true">
+            <MudMenuItem Icon="@Icons.Material.Filled.Refresh" OnClick="RefreshData">
+                Refresh Now
+            </MudMenuItem>
+            <MudMenuItem Icon="@Icons.Material.Filled.Edit" OnClick="EditWidget">
+                Edit
+            </MudMenuItem>
+            <MudMenuItem Icon="@Icons.Material.Filled.Fullscreen" OnClick="ToggleSize">
+                @(_isExpanded ? "Shrink" : "Expand")
+            </MudMenuItem>
+            <MudMenuItem Icon="@Icons.Material.Filled.Delete" OnClick="DeleteWidget"
+                         Style="color: var(--mud-palette-error);">
+                Delete
+            </MudMenuItem>
+        </MudMenu>
+    </MudStack>
+
+    @* Chart area *@
+    @if (_isLoading)
+    {
+        <MudStack AlignItems="AlignItems.Center" Justify="Justify.Center"
+                  Style="min-height: 200px;">
+            <MudProgressCircular Indeterminate="true" Size="MudBlazor.Size.Medium" />
+            <MudText Typo="Typo.caption" Style="opacity: 0.5;">Loading data...</MudText>
+        </MudStack>
+    }
+    else if (_error != null)
+    {
+        <MudAlert Severity="Severity.Error" Dense="true" Class="mb-2">
+            @_error
+        </MudAlert>
+        <MudButton Variant="Variant.Outlined"
+                   Color="MudBlazor.Color.Primary"
+                   Size="MudBlazor.Size.Small"
+                   OnClick="RefreshData">
+            Retry
+        </MudButton>
+    }
+    else if (WidgetConfig.ChartType == Models.ChartType.RadialBar)
+    {
+        @RenderGauge()
+    }
+    else if (WidgetConfig.ChartType == Models.ChartType.Pie || WidgetConfig.ChartType == Models.ChartType.Donut)
+    {
+        @RenderPie()
+    }
+    else
+    {
+        @RenderXY()
+    }
+
+    @* Status bar *@
+    <MudStack Row="true" AlignItems="AlignItems.Center" Class="mt-1">
+        <MudText Typo="Typo.caption" Style="opacity: 0.4;">
+            @if (_lastUpdated.HasValue)
+            {
+                @($"Updated {FormatTimeAgo(_lastUpdated.Value)}")
+            }
+        </MudText>
+        <MudSpacer />
+        @if (WidgetConfig.DataSource.RefreshIntervalSeconds > 0)
+        {
+            <MudChip T="string" Size="MudBlazor.Size.Small" Variant="Variant.Text" Style="opacity: 0.4;">
+                @($"Every {WidgetConfig.DataSource.RefreshIntervalSeconds}s")
+            </MudChip>
+        }
+    </MudStack>
+
+    @* Threshold alarm indicator *@
+    @if (_thresholdBreached)
+    {
+        <MudAlert Severity="Severity.Warning" Dense="true" Class="mt-2" Variant="Variant.Filled">
+            Threshold breached: value @_latestValue exceeds @WidgetConfig.Threshold?.Value
+        </MudAlert>
+    }
+</MudPaper>
+
+@code {
+    private RenderFragment RenderXY() => __builder =>
+    {
+        var seriesGroups = _chartData.GroupBy(p => p.Series).ToList();
+        var apexSeriesType = GetApexSeriesType();
+
+        <ApexChart TItem="ChartDataPoint"
+                   Title=""
+                   Height="250">
+            @foreach (var series in seriesGroups)
+            {
+                <ApexPointSeries TItem="ChartDataPoint"
+                                 Items="series.ToList()"
+                                 Name="@series.Key"
+                                 SeriesType="apexSeriesType"
+                                 XValue="e => e.X"
+                                 YValue="e => (decimal)e.Y" />
+            }
+
+            @if (WidgetConfig.Correlation != null && _secondaryChartData.Count > 0)
+            {
+                var secondaryGroups = _secondaryChartData.GroupBy(p => p.Series);
+                @foreach (var series in secondaryGroups)
+                {
+                    <ApexPointSeries TItem="ChartDataPoint"
+                                     Items="series.ToList()"
+                                     Name="@series.Key"
+                                     SeriesType="SeriesType.Line"
+                                     XValue="e => e.X"
+                                     YValue="e => (decimal)e.Y" />
+                }
+            }
+        </ApexChart>
+    };
+
+    private RenderFragment RenderPie() => __builder =>
+    {
+        var pieType = WidgetConfig.ChartType == Models.ChartType.Donut ? SeriesType.Donut : SeriesType.Pie;
+
+        <ApexChart TItem="ChartDataPoint"
+                   Title=""
+                   Height="250">
+            <ApexPointSeries TItem="ChartDataPoint"
+                             Items="_chartData"
+                             Name="Values"
+                             SeriesType="pieType"
+                             XValue="e => e.X"
+                             YAggregate="e => (decimal)e.Sum(p => p.Y)"
+                             OrderByDescending="e => e.Y" />
+        </ApexChart>
+    };
+
+    private RenderFragment RenderGauge() => __builder =>
+    {
+        var value = _chartData.FirstOrDefault()?.Y ?? 0;
+        <MudStack AlignItems="AlignItems.Center" Justify="Justify.Center" Style="min-height: 200px;">
+            <MudText Typo="Typo.h3" Color="MudBlazor.Color.Primary" Style="font-weight: 700;">
+                @FormatNumber(value)
+            </MudText>
+            @if (_chartData.Count > 0)
+            {
+                <MudText Typo="Typo.body2" Style="opacity: 0.6;">
+                    @_chartData.First().Series
+                </MudText>
+            }
+        </MudStack>
+    };
+}
