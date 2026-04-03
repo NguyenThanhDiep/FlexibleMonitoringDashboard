@@ -1,0 +1,54 @@
+@* src/FlexibleMonitoringDashboard.Client/Components/Configuration/UnsavedChangesGuard.razor *@
+@using FlexibleMonitoringDashboard.Client.Services
+@inject DashboardStateService State
+@inject IJSRuntime JSRuntime
+@implements IAsyncDisposable
+
+@* This component renders nothing visible — it only manages the JS event listener *@
+
+@code {
+    private bool _isRegistered = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Register the beforeunload handler
+            await JSRuntime.InvokeVoidAsync("dashboardInterop.registerBeforeUnload", null);
+            _isRegistered = true;
+
+            // Subscribe to state changes to keep JS flag in sync
+            State.OnStateChanged += OnStateChanged;
+        }
+    }
+
+    private async void OnStateChanged()
+    {
+        try
+        {
+            // Update the JS-side flag so beforeunload knows whether to warn
+            await JSRuntime.InvokeVoidAsync("dashboardInterop.setUnsavedChanges", State.IsDirty);
+        }
+        catch (JSDisconnectedException)
+        {
+            // Blazor circuit disconnected — ignore
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        State.OnStateChanged -= OnStateChanged;
+
+        if (_isRegistered)
+        {
+            try
+            {
+                await JSRuntime.InvokeVoidAsync("dashboardInterop.unregisterBeforeUnload");
+            }
+            catch (JSDisconnectedException)
+            {
+                // Circuit already disconnected — ignore
+            }
+        }
+    }
+}
