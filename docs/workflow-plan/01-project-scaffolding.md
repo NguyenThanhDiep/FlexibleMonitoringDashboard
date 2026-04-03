@@ -27,50 +27,53 @@
 
 ## Step-by-Step Implementation
 
-### Step 1: Create Solution from Template
+> **Important**: This plan assumes the workspace root `d:\TempProjects\FlexibleMonitoringDashboard` already exists and contains a `docs/` folder and a `.git/` repository. Projects are created directly under `src/` — no move step required.
+
+### Step 1: Create Solution and Projects Directly Under `src/`
 
 ```powershell
-# Navigate to your workspace root
-cd d:\
+# Navigate to workspace root (already exists with docs/ and .git/)
+cd d:\TempProjects\FlexibleMonitoringDashboard
 
-# Create the Blazor Web App with WebAssembly interactivity
-dotnet new blazor --name FlexibleMonitoringDashboard --interactivity WebAssembly --output FlexibleMonitoringDashboard --all-interactive
+# Create the solution file at the workspace root
+dotnet new sln --name FlexibleMonitoringDashboard
 
-# Verify structure
-cd FlexibleMonitoringDashboard
-dir
-# Should see:
-#   FlexibleMonitoringDashboard.sln
-#   FlexibleMonitoringDashboard/          (server project)
-#   FlexibleMonitoringDashboard.Client/   (client project)
-```
-
-### Step 2: Restructure into `src/` Folder
-
-```powershell
 # Create src directory
 mkdir src
 
-# Move projects into src
-Move-Item FlexibleMonitoringDashboard src/FlexibleMonitoringDashboard
-Move-Item FlexibleMonitoringDashboard.Client src/FlexibleMonitoringDashboard.Client
+# Create the server (host) project directly under src/
+dotnet new blazor --name FlexibleMonitoringDashboard --interactivity WebAssembly --output src/FlexibleMonitoringDashboard --all-interactive --no-https false
 
-# Update .sln file references (or recreate)
-dotnet sln FlexibleMonitoringDashboard.sln remove FlexibleMonitoringDashboard/FlexibleMonitoringDashboard.csproj
-dotnet sln FlexibleMonitoringDashboard.sln remove FlexibleMonitoringDashboard.Client/FlexibleMonitoringDashboard.Client.csproj
+# The template creates both server and client projects under src/FlexibleMonitoringDashboard/.
+# However, the client project is generated as a sibling when using --all-interactive.
+# If the client project was created at src/FlexibleMonitoringDashboard.Client/ automatically, skip the next command.
+# Otherwise, create it manually:
+#   dotnet new blazorwasm --name FlexibleMonitoringDashboard.Client --output src/FlexibleMonitoringDashboard.Client
+
+# Verify the two projects exist:
+dir src
+# Should see:
+#   src/FlexibleMonitoringDashboard/                    (server project)
+#   src/FlexibleMonitoringDashboard.Client/             (client project)
+```
+
+> **Note on `dotnet new blazor --all-interactive`**: When `--output` targets a subfolder, the template places the server project at the specified path and the client project as a sibling (`src/FlexibleMonitoringDashboard.Client/`). If the template instead nests the client project differently, move it so the final layout matches:
+> - `src/FlexibleMonitoringDashboard/FlexibleMonitoringDashboard.csproj`
+> - `src/FlexibleMonitoringDashboard.Client/FlexibleMonitoringDashboard.Client.csproj`
+
+### Step 2: Add Projects to Solution & Verify References
+
+```powershell
+# Add both projects to the root solution file
 dotnet sln FlexibleMonitoringDashboard.sln add src/FlexibleMonitoringDashboard/FlexibleMonitoringDashboard.csproj
 dotnet sln FlexibleMonitoringDashboard.sln add src/FlexibleMonitoringDashboard.Client/FlexibleMonitoringDashboard.Client.csproj
 
-# Update project reference in server .csproj to point to new Client location
+# Verify the server project references the client project correctly.
 # In src/FlexibleMonitoringDashboard/FlexibleMonitoringDashboard.csproj,
-# change the ProjectReference path from:
+# the ProjectReference should be:
 #   ..\FlexibleMonitoringDashboard.Client\FlexibleMonitoringDashboard.Client.csproj
-# to:
-#   ..\FlexibleMonitoringDashboard.Client\FlexibleMonitoringDashboard.Client.csproj
-# (should still be relative — verify it's correct after the move)
+# Since both projects are siblings under src/, this relative path is correct by default.
 ```
-
-> **Note**: If moving to `src/` causes issues with project references, it's acceptable to skip this step and keep the default flat structure. The solution still works the same way.
 
 ### Step 3: Install NuGet Packages on Client Project
 
@@ -82,19 +85,21 @@ dotnet add package MudBlazor
 
 # Blazor-ApexCharts — Chart rendering
 dotnet add package Blazor-ApexCharts
+
+cd ../..
 ```
 
 ### Step 4: Create Test Project
 
 ```powershell
-cd ../../
+# From solution root
 mkdir tests
 cd tests
 
 dotnet new xunit --name FlexibleMonitoringDashboard.Tests
 cd FlexibleMonitoringDashboard.Tests
 
-# Add references
+# Add references to both src projects
 dotnet add reference ../../src/FlexibleMonitoringDashboard/FlexibleMonitoringDashboard.csproj
 dotnet add reference ../../src/FlexibleMonitoringDashboard.Client/FlexibleMonitoringDashboard.Client.csproj
 
@@ -145,8 +150,7 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 // MudBlazor
 builder.Services.AddMudServices();
 
-// ApexCharts
-builder.Services.AddApexCharts();
+// Note: Blazor-ApexCharts does not require DI registration (no AddApexCharts call needed)
 
 // HttpClient for backend API calls
 builder.Services.AddScoped(sp =>
@@ -263,10 +267,14 @@ app.Run();
 ### Step 10: Create Required Directories
 
 ```powershell
-# From solution root
+# From solution root (d:\TempProjects\FlexibleMonitoringDashboard)
+
+# Server directories
 mkdir src/FlexibleMonitoringDashboard/Endpoints
 mkdir src/FlexibleMonitoringDashboard/Services
 mkdir src/FlexibleMonitoringDashboard/Models
+
+# Client directories
 mkdir src/FlexibleMonitoringDashboard.Client/Services
 mkdir src/FlexibleMonitoringDashboard.Client/Models
 mkdir src/FlexibleMonitoringDashboard.Client/Components/Dashboard
@@ -276,13 +284,37 @@ mkdir src/FlexibleMonitoringDashboard.Client/Components/Configuration
 mkdir src/FlexibleMonitoringDashboard.Client/Components/Threshold
 mkdir src/FlexibleMonitoringDashboard.Client/wwwroot/css
 mkdir src/FlexibleMonitoringDashboard.Client/wwwroot/js
+
+# Test directories
 mkdir tests/FlexibleMonitoringDashboard.Tests/Services
 mkdir tests/FlexibleMonitoringDashboard.Tests/Endpoints
-mkdir docs
-mkdir docs/ai-assistance
+
+# docs/ and docs/ai-assistance/ already exist — skip
 ```
 
-### Step 11: Create Placeholder JS Interop File
+### Step 11: Create Namespace Placeholder Files
+
+The `_Imports.razor` references namespaces (Models, Services, Components.*) that have no `.cs` files yet. To avoid build errors, create a minimal `.gitkeep.cs` file in each empty namespace directory:
+
+```powershell
+# From solution root
+$dirs = @(
+    @{ Path = 'src/FlexibleMonitoringDashboard.Client/Models'; NS = 'FlexibleMonitoringDashboard.Client.Models' },
+    @{ Path = 'src/FlexibleMonitoringDashboard.Client/Services'; NS = 'FlexibleMonitoringDashboard.Client.Services' },
+    @{ Path = 'src/FlexibleMonitoringDashboard.Client/Components/Dashboard'; NS = 'FlexibleMonitoringDashboard.Client.Components.Dashboard' },
+    @{ Path = 'src/FlexibleMonitoringDashboard.Client/Components/DataSource'; NS = 'FlexibleMonitoringDashboard.Client.Components.DataSource' },
+    @{ Path = 'src/FlexibleMonitoringDashboard.Client/Components/Correlation'; NS = 'FlexibleMonitoringDashboard.Client.Components.Correlation' },
+    @{ Path = 'src/FlexibleMonitoringDashboard.Client/Components/Configuration'; NS = 'FlexibleMonitoringDashboard.Client.Components.Configuration' },
+    @{ Path = 'src/FlexibleMonitoringDashboard.Client/Components/Threshold'; NS = 'FlexibleMonitoringDashboard.Client.Components.Threshold' }
+)
+foreach ($d in $dirs) {
+    Set-Content -Path "$($d.Path)/.gitkeep.cs" -Value "// Placeholder`nnamespace $($d.NS);`n"
+}
+```
+
+> These placeholder files will be superseded when actual code is added in later tasks.
+
+### Step 12: Create Placeholder JS Interop File
 
 Create `src/FlexibleMonitoringDashboard.Client/wwwroot/js/interop.js`:
 
@@ -291,7 +323,7 @@ Create `src/FlexibleMonitoringDashboard.Client/wwwroot/js/interop.js`:
 window.dashboardInterop = {};
 ```
 
-### Step 12: Create Placeholder CSS File
+### Step 13: Create Placeholder CSS File
 
 Create `src/FlexibleMonitoringDashboard.Client/wwwroot/css/app.css`:
 
@@ -299,10 +331,10 @@ Create `src/FlexibleMonitoringDashboard.Client/wwwroot/css/app.css`:
 /* Custom styles — implemented in UI-12 */
 ```
 
-### Step 13: Verify Build
+### Step 14: Verify Build
 
 ```powershell
-cd <solution-root>
+# From solution root (d:\TempProjects\FlexibleMonitoringDashboard)
 dotnet build
 # Must succeed with zero errors
 ```
@@ -312,7 +344,8 @@ dotnet build
 ## Verification
 
 - [ ] `dotnet build` succeeds with zero errors
-- [ ] Solution has 3 projects: Server, Client, Tests
+- [ ] Solution has 3 projects: Server (`src/FlexibleMonitoringDashboard`), Client (`src/FlexibleMonitoringDashboard.Client`), Tests (`tests/FlexibleMonitoringDashboard.Tests`)
 - [ ] MudBlazor and Blazor-ApexCharts NuGet packages installed on Client
 - [ ] `dotnet run --project src/FlexibleMonitoringDashboard` starts and shows default Blazor page
-- [ ] All required directories exist
+- [ ] All required directories exist under `src/` and `tests/`
+- [ ] Existing `docs/` folder is untouched
