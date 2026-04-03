@@ -1,0 +1,60 @@
+You are building a real product that you own and design, and we are the customers who will purchase it. 
+What this means: 
++ You have complete freedom in design, features, and implementation decisions 
++ You decide what makes this product 
++ You choose the technical approach and architecture 
++ You determine which features are essential vs. nice-to-have 
++ You are responsible for the product vision and execution
+
+Requirements 
++ Repository: Create a public GitHub repository with your complete solution 
++ Documentation: Include comprehensive Markdown documentation (beyond 
+just README.md) 
++ AI Assistance Transparency: 
+- You are encouraged to use AI tools for assistance 
+- If you use AI, create a http://Claude.ai Project and include ALL chat 
+threads in your code repository 
+- Place AI conversations in a /docs/ai-assistance/ folder with clear labels 
+and links 
++ Delivery: Share the GitHub repository link when complete
+
+What We're Evaluating 
++ User Experience: Is this a product people would want to use? 
++ Performance: Does it work efficiently and reliably? 
++ Documentation: Can we understand your product, your decisions, your 
+solutions, and how to use it? 
+
+Product Description: Flexible Monitoring Dashboard Web Application
+Build a flexible, real-time monitoring dashboard web application that can display 
+dynamic charts, diagrams, and reports from different data sources or websites. 
+
+Reference for inspiration: Check out the freeboard (https://github.com/Freeboard/freeboard) repository on GitHub for 
+conceptual reference. However, you are free to design and implement your own 
+vision. 
+
+Remember: You are building this product for yourself to sell to me. Design it as a 
+complete, market-ready product that businesses or individuals would want to 
+purchase and use for their monitoring needs. 
+
+What You Need to Deliver 
+Core Features:
++ A web application that can aggregate and display data from multiple sources 
++ Real-time or near-real-time data visualization with charts and diagrams 
++ Flexible configuration to connect to different data sources or websites 
++ Features that you believe make this product valuable and competitive 
+
+Product Notes:
++ Must have: Make UI beautiful and friendly, alow users to add headers or description for each chart, add line break or description header block to separate each group of charts if needed.
++ Must have: Universal URL data connector, Let users paste any public JSON API URL. Auto-detect fields, suggest chart type, render instantly.
++ Must have: Cross-source correlation panel, Overlay data from two different APIs in one chart (e.g. BTC price + USD/VND exchange rate). Visual merge with auto time-axis alignment.
++ Must have: All public JSON API URL and user's configuration must be able to save and export to json configuration file, which allow users to share their dashboard to others or start quick by just importing a configuration json file.
++ Must have: An import configuration button that allow users to upload json configuration file and web automatically build all charts based on json config quickly.
++ Nice to have: Allow user to configure the threshold of each chart so when the value reach the threshold, an alarm wiil show to notify user.
+
+Technical Notes:
++ The design should be in .NET ecosystem, building SPA using .NET 8.
++ In the first version, maybe we do not need authen and author now.
++ Database to save user identity do not need yet.
++ Mainly focus on fetching data from public API url now. Example: https://api.coingecko.com/api/v3/simple/price?vs_currencies=usd&ids=bitcoin&x_cg_demo_api_key=<api-key> or https://api.open-meteo.com/v1/forecast?latitude=10.823&longitude=106.6296&hourly=temperature_2m
++ Other sources such as CSV, Excel, ... maybe implement later.
++ In first version, we also do not need to support saving url or chart type which users choose yet, they lost their configuration when they close the page. We must warn user if they need to export Json configuration to use later or not before users close the web page.

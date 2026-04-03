@@ -1,0 +1,206 @@
+# Task UI-12: Custom CSS
+
+## Metadata
+- **ID**: UI-12-custom-css
+- **Layer**: 1
+- **Dependencies**: `01-project-scaffolding`
+- **Blocks**: None
+- **Parallel With**: BE-01, BE-02, BE-03, FE-01, FE-04, FE-05, FE-06, DOC-*
+
+---
+
+## Files Created
+
+| File | Path |
+|------|------|
+| `app.css` | `src/FlexibleMonitoringDashboard.Client/wwwroot/css/app.css` |
+
+---
+
+## Step-by-Step Implementation
+
+### Step 1: Create/Update `app.css`
+
+```css
+/* src/FlexibleMonitoringDashboard.Client/wwwroot/css/app.css */
+
+/* ===== Global ===== */
+html, body {
+    font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* ===== Dashboard Container ===== */
+.dashboard-container {
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+/* ===== Widget Cards ===== */
+.widget-card {
+    border-radius: 8px;
+    transition: box-shadow 0.2s ease, transform 0.1s ease;
+}
+
+.widget-card:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* ===== Section Headers ===== */
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.section-header .editable-title {
+    cursor: pointer;
+    padding: 2px 4px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.section-header .editable-title:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+}
+
+/* ===== Add Chart Dashed Card ===== */
+.add-chart-card {
+    min-height: 200px;
+    border: 2px dashed rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.2s, background-color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.add-chart-card:hover {
+    border-color: var(--mud-palette-primary);
+    background-color: rgba(25, 118, 210, 0.04);
+}
+
+/* ===== Empty State ===== */
+.empty-state {
+    text-align: center;
+    padding: 80px 16px;
+}
+
+.empty-state .icon {
+    font-size: 80px;
+    opacity: 0.2;
+}
+
+/* ===== Chart Status Bar ===== */
+.chart-status-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    opacity: 0.5;
+    font-size: 0.75rem;
+    margin-top: 4px;
+}
+
+/* ===== Loading Skeleton ===== */
+.chart-skeleton {
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ===== Threshold Alert ===== */
+.threshold-alert {
+    animation: pulse-border 2s infinite;
+}
+
+@keyframes pulse-border {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255, 82, 82, 0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(255, 82, 82, 0); }
+}
+
+/* ===== Correlation Panel ===== */
+.correlation-panel {
+    border-left: 3px solid var(--mud-palette-primary);
+}
+
+.correlation-panel.secondary {
+    border-left-color: var(--mud-palette-secondary);
+}
+
+/* ===== Responsive Adjustments ===== */
+@media (max-width: 600px) {
+    .mud-appbar .toolbar-title-full {
+        display: none;
+    }
+
+    .widget-card {
+        margin-bottom: 8px;
+    }
+}
+
+@media (max-width: 960px) {
+    .correlation-panel {
+        margin-top: 16px;
+    }
+}
+
+/* ===== Stepper Dialog Improvements ===== */
+.mud-stepper {
+    min-height: 300px;
+}
+
+/* ===== Field Table Monospace Paths ===== */
+.field-path {
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 0.85em;
+}
+
+/* ===== Scrollbar Styling (Webkit) ===== */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Dark mode scrollbar */
+.mud-theme-dark ::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.mud-theme-dark ::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+```
+
+---
+
+## Verification
+
+- [ ] CSS file loads without syntax errors
+- [ ] Widget cards have subtle hover shadow effect
+- [ ] Add chart dashed card highlights on hover
+- [ ] Threshold alert has pulsing animation
+- [ ] Scrollbars are styled (thin, rounded)
+- [ ] Responsive styles work on mobile (< 600px)
+- [ ] Dark mode scrollbar colors adapt correctly
+- [ ] No CSS conflicts with MudBlazor built-in styles
