@@ -38,7 +38,6 @@ app.UseAntiforgery();
 // API endpoints (will be mapped in BE-04)
 // app.MapDataProxyEndpoints();
 
-app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(FlexibleMonitoringDashboard.Client._Imports).Assembly);
