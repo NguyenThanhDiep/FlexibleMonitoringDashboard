@@ -1,5 +1,9 @@
 {
     "chat.tools.terminal.autoApprove": {
-        "dotnet build": true
+        "dotnet build": true,
+        "/^git -C d:\\\\TempProjects\\\\FlexibleMonitoringDashboard rm -r --cached src/FlexibleMonitoringDashboard/bin src/FlexibleMonitoringDashboard/obj src/FlexibleMonitoringDashboard\\.Client/bin src/FlexibleMonitoringDashboard\\.Client/obj tests/FlexibleMonitoringDashboard\\.Tests/bin tests/FlexibleMonitoringDashboard\\.Tests/obj 2>&1$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
     }
 }

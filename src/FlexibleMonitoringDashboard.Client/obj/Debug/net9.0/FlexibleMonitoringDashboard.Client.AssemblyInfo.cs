@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FlexibleMonitoringDashboard.Client")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3081947f0526c62e16d1dec16f6adc9ab94c47db")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e0300bb4554e92ec23d9f87966c551663578966a")]
 [assembly: System.Reflection.AssemblyProductAttribute("FlexibleMonitoringDashboard.Client")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FlexibleMonitoringDashboard.Client")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
