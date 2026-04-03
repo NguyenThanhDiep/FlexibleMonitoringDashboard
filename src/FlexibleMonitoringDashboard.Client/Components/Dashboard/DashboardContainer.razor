@@ -1,2 +1,64 @@
 @* src/FlexibleMonitoringDashboard.Client/Components/Dashboard/DashboardContainer.razor *@
-@* Stub — full implementation in UI-03 *@
+@inject DashboardStateService State
+@implements IDisposable
+
+<MudStack Spacing="0">
+    @for (var i = 0; i < State.Config.Sections.Count; i++)
+    {
+        var section = State.Config.Sections[i];
+        var isFirst = i == 0;
+        var isLast = i == State.Config.Sections.Count - 1;
+
+        <DashboardSection SectionConfig="section"
+                          OnEdit="() => EditSection(section.Id)"
+                          OnDelete="() => ConfirmDeleteSection(section.Id)"
+                          OnMoveUp="() => State.MoveSection(section.Id, -1)"
+                          OnMoveDown="() => State.MoveSection(section.Id, 1)"
+                          IsFirst="isFirst"
+                          IsLast="isLast" />
+    }
+</MudStack>
+
+@* Confirm delete dialog *@
+<MudMessageBox @ref="_deleteBox"
+               Title="Delete Section"
+               CancelText="Cancel">
+    <MessageContent>
+        Are you sure you want to delete this section and all its charts?
+        This action cannot be undone.
+    </MessageContent>
+    <YesButton>
+        <MudButton Variant="Variant.Filled" Color="MudBlazor.Color.Error" StartIcon="@Icons.Material.Filled.Delete">
+            Delete
+        </MudButton>
+    </YesButton>
+</MudMessageBox>
+
+@code {
+    private MudMessageBox _deleteBox = null!;
+
+    protected override void OnInitialized()
+    {
+        State.OnStateChanged += StateHasChanged;
+    }
+
+    private void EditSection(string sectionId)
+    {
+        // Section editing is handled inline by DashboardSection component
+        // This callback exists for future expansion (e.g., modal editor)
+    }
+
+    private async Task ConfirmDeleteSection(string sectionId)
+    {
+        var result = await _deleteBox.ShowAsync();
+        if (result == true)
+        {
+            State.RemoveSection(sectionId);
+        }
+    }
+
+    public void Dispose()
+    {
+        State.OnStateChanged -= StateHasChanged;
+    }
+}
