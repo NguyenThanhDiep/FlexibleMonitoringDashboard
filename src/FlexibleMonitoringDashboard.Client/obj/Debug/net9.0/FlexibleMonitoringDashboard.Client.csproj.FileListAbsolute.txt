@@ -1121,10 +1121,10 @@ D:\TempProjects\FlexibleMonitoringDashboard\src\FlexibleMonitoringDashboard.Clie
 D:\TempProjects\FlexibleMonitoringDashboard\src\FlexibleMonitoringDashboard.Client\obj\Debug\net9.0\refint\FlexibleMonitoringDashboard.Client.dll
 D:\TempProjects\FlexibleMonitoringDashboard\src\FlexibleMonitoringDashboard.Client\obj\Debug\net9.0\FlexibleMonitoringDashboard.Client.pdb
 D:\TempProjects\FlexibleMonitoringDashboard\src\FlexibleMonitoringDashboard.Client\obj\Debug\net9.0\ref\FlexibleMonitoringDashboard.Client.dll
-d:\TempProjects\FlexibleMonitoringDashboard\src\FlexibleMonitoringDashboard.Client\bin\Debug\net9.0\wwwroot\_framework\FlexibleMonitoringDashboard.Client.oj4vbihepo.wasm
-d:\TempProjects\FlexibleMonitoringDashboard\src\FlexibleMonitoringDashboard.Client\bin\Debug\net9.0\wwwroot\_framework\FlexibleMonitoringDashboard.Client.eiayp8ymrv.pdb
-d:\TempProjects\FlexibleMonitoringDashboard\src\FlexibleMonitoringDashboard.Client\bin\Debug\net9.0\wwwroot\_framework\FlexibleMonitoringDashboard.Client.oj4vbihepo.wasm.gz
-d:\TempProjects\FlexibleMonitoringDashboard\src\FlexibleMonitoringDashboard.Client\bin\Debug\net9.0\wwwroot\_framework\FlexibleMonitoringDashboard.Client.eiayp8ymrv.pdb.gz
-d:\TempProjects\FlexibleMonitoringDashboard\src\FlexibleMonitoringDashboard.Client\obj\Debug\net9.0\compressed\dbnj9zw3ev-oj4vbihepo.gz
-d:\TempProjects\FlexibleMonitoringDashboard\src\FlexibleMonitoringDashboard.Client\obj\Debug\net9.0\compressed\akjfbmv18c-eiayp8ymrv.gz
-d:\TempProjects\FlexibleMonitoringDashboard\src\FlexibleMonitoringDashboard.Client\obj\Debug\net9.0\compressed\gm0z60xjah-bm1nadir3e.gz
+d:\TempProjects\FlexibleMonitoringDashboard\src\FlexibleMonitoringDashboard.Client\bin\Debug\net9.0\wwwroot\_framework\FlexibleMonitoringDashboard.Client.76fs84paxt.wasm
+d:\TempProjects\FlexibleMonitoringDashboard\src\FlexibleMonitoringDashboard.Client\bin\Debug\net9.0\wwwroot\_framework\FlexibleMonitoringDashboard.Client.6pqcxu6fju.pdb
+d:\TempProjects\FlexibleMonitoringDashboard\src\FlexibleMonitoringDashboard.Client\bin\Debug\net9.0\wwwroot\_framework\FlexibleMonitoringDashboard.Client.76fs84paxt.wasm.gz
+d:\TempProjects\FlexibleMonitoringDashboard\src\FlexibleMonitoringDashboard.Client\bin\Debug\net9.0\wwwroot\_framework\FlexibleMonitoringDashboard.Client.6pqcxu6fju.pdb.gz
+d:\TempProjects\FlexibleMonitoringDashboard\src\FlexibleMonitoringDashboard.Client\obj\Debug\net9.0\compressed\dbnj9zw3ev-76fs84paxt.gz
+d:\TempProjects\FlexibleMonitoringDashboard\src\FlexibleMonitoringDashboard.Client\obj\Debug\net9.0\compressed\akjfbmv18c-6pqcxu6fju.gz
+d:\TempProjects\FlexibleMonitoringDashboard\src\FlexibleMonitoringDashboard.Client\obj\Debug\net9.0\compressed\gm0z60xjah-kg8uc5xprg.gz

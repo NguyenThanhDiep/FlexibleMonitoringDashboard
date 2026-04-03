@@ -10,8 +10,9 @@ builder.Services.AddRazorComponents()
 // MudBlazor (server-side prerender support)
 builder.Services.AddMudServices();
 
-// HttpClient for external API calls (will be configured in BE tasks)
+// HttpClient for external API calls
 builder.Services.AddHttpClient();
+builder.Services.AddScoped<FlexibleMonitoringDashboard.Services.ExternalApiService>();
 
 // CORS (for development)
 builder.Services.AddCors(options =>
