@@ -1,0 +1,45 @@
+@* src/FlexibleMonitoringDashboard.Client/Components/Configuration/ImportButton.razor *@
+@using Microsoft.AspNetCore.Components.Forms
+
+<MudButton Variant="@Variant"
+           Color="@Color"
+           StartIcon="@Icons.Material.Filled.FileUpload"
+           OnClick="OpenImportDialog"
+           Size="@Size">
+    @ChildContent
+</MudButton>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public Variant Variant { get; set; } = Variant.Text;
+    [Parameter] public MudBlazor.Color Color { get; set; } = MudBlazor.Color.Inherit;
+    [Parameter] public MudBlazor.Size Size { get; set; } = MudBlazor.Size.Small;
+
+    [Inject] private DashboardStateService State { get; set; } = null!;
+    [Inject] private IDialogService DialogService { get; set; } = null!;
+
+    private async Task OpenImportDialog()
+    {
+        // Warn if there are unsaved changes
+        if (State.IsDirty)
+        {
+            var confirm = await DialogService.ShowMessageBoxAsync(
+                "Unsaved Changes",
+                "You have unsaved changes. Importing a new configuration will replace the current dashboard. Continue?",
+                yesText: "Import Anyway",
+                cancelText: "Cancel");
+
+            if (confirm != true) return;
+        }
+
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Small,
+            FullWidth = true,
+            CloseButton = true
+        };
+
+        var dialog = await DialogService.ShowAsync<ImportDialog>("Import Configuration", options);
+        await dialog.Result;
+    }
+}

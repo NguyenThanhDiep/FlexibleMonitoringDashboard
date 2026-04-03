@@ -1,0 +1,34 @@
+@* src/FlexibleMonitoringDashboard.Client/Components/Configuration/ExportButton.razor *@
+
+<MudButton Variant="@Variant"
+           Color="@Color"
+           StartIcon="@Icons.Material.Filled.FileDownload"
+           OnClick="Export"
+           Size="@Size"
+           Disabled="@(State.Config.Sections.Count == 0)">
+    @ChildContent
+</MudButton>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public Variant Variant { get; set; } = Variant.Text;
+    [Parameter] public MudBlazor.Color Color { get; set; } = MudBlazor.Color.Inherit;
+    [Parameter] public MudBlazor.Size Size { get; set; } = MudBlazor.Size.Small;
+
+    [Inject] private ConfigurationService ConfigService { get; set; } = null!;
+    [Inject] private DashboardStateService State { get; set; } = null!;
+    [Inject] private ISnackbar Snackbar { get; set; } = null!;
+
+    private async Task Export()
+    {
+        try
+        {
+            await ConfigService.ExportAsync(State.Config);
+            Snackbar.Add("Configuration exported successfully!", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Export failed: {ex.Message}", Severity.Error);
+        }
+    }
+}
