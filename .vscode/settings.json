@@ -32,6 +32,14 @@
         "/^dotnet test tests/FlexibleMonitoringDashboard\\.Tests/ --logger \"console;verbosity=normal\" 2>&1 \\| Select-Object -Last 30$/": {
             "approve": true,
             "matchCommandLine": true
+        },
+        "/^dotnet test tests/FlexibleMonitoringDashboard\\.Tests/FlexibleMonitoringDashboard\\.Tests\\.csproj --filter \"FullyQualifiedName~Services\" 2>&1$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^dotnet test tests/FlexibleMonitoringDashboard\\.Tests/FlexibleMonitoringDashboard\\.Tests\\.csproj --filter \"FullyQualifiedName~Services\" 2>&1 \\| Select-String -Pattern \"passed\\|failed\\|error\\|FAIL\\|PASS\\|total\" $/": {
+            "approve": true,
+            "matchCommandLine": true
         }
     }
 }
