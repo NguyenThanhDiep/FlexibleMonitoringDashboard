@@ -49,3 +49,6 @@ app.MapRazorComponents<App>()
     .AddAdditionalAssemblies(typeof(FlexibleMonitoringDashboard.Client._Imports).Assembly);
 
 app.Run();
+
+// Make Program class accessible for integration tests
+public partial class Program { }

@@ -20,6 +20,18 @@
         "/^Set-Content -Force -Path \"d:\\\\TempProjects\\\\FlexibleMonitoringDashboard\\\\src\\\\FlexibleMonitoringDashboard\\.Client\\\\Components\\\\Dashboard\\\\ChartWidget\\.razor\" -Value @'\nplaceholder\n'@$/": {
             "approve": true,
             "matchCommandLine": true
+        },
+        "/^dotnet restore tests/FlexibleMonitoringDashboard\\.Tests/FlexibleMonitoringDashboard\\.Tests\\.csproj 2>&1 \\| Select-Object -Last 10$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^dotnet test tests/FlexibleMonitoringDashboard\\.Tests/ --logger \"console;verbosity=normal\" 2>&1$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^dotnet test tests/FlexibleMonitoringDashboard\\.Tests/ --logger \"console;verbosity=normal\" 2>&1 \\| Select-Object -Last 30$/": {
+            "approve": true,
+            "matchCommandLine": true
         }
     }
 }
