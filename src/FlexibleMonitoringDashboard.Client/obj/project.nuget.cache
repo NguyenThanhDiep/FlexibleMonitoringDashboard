@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "uyiFVDIoZGk=",
+  "dgSpecHash": "m7/8BCr/ERI=",
   "success": true,
-  "projectFilePath": "D:\\TempProjects\\FlexibleMonitoringDashboard\\src\\FlexibleMonitoringDashboard.Client\\FlexibleMonitoringDashboard.Client.csproj",
+  "projectFilePath": "d:\\TempProjects\\FlexibleMonitoringDashboard\\src\\FlexibleMonitoringDashboard.Client\\FlexibleMonitoringDashboard.Client.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\dieptnguyen\\.nuget\\packages\\blazor-apexcharts\\6.1.0\\blazor-apexcharts.6.1.0.nupkg.sha512",
     "C:\\Users\\dieptnguyen\\.nuget\\packages\\microsoft.aspnetcore.authorization\\9.0.14\\microsoft.aspnetcore.authorization.9.0.14.nupkg.sha512",

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\TempProjects\\FlexibleMonitoringDashboard\\src\\FlexibleMonitoringDashboard.Client\\FlexibleMonitoringDashboard.Client.csproj": {}
+    "d:\\TempProjects\\FlexibleMonitoringDashboard\\src\\FlexibleMonitoringDashboard.Client\\FlexibleMonitoringDashboard.Client.csproj": {}
   },
   "projects": {
-    "D:\\TempProjects\\FlexibleMonitoringDashboard\\src\\FlexibleMonitoringDashboard.Client\\FlexibleMonitoringDashboard.Client.csproj": {
+    "d:\\TempProjects\\FlexibleMonitoringDashboard\\src\\FlexibleMonitoringDashboard.Client\\FlexibleMonitoringDashboard.Client.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\TempProjects\\FlexibleMonitoringDashboard\\src\\FlexibleMonitoringDashboard.Client\\FlexibleMonitoringDashboard.Client.csproj",
+        "projectUniqueName": "d:\\TempProjects\\FlexibleMonitoringDashboard\\src\\FlexibleMonitoringDashboard.Client\\FlexibleMonitoringDashboard.Client.csproj",
         "projectName": "FlexibleMonitoringDashboard.Client",
-        "projectPath": "D:\\TempProjects\\FlexibleMonitoringDashboard\\src\\FlexibleMonitoringDashboard.Client\\FlexibleMonitoringDashboard.Client.csproj",
+        "projectPath": "d:\\TempProjects\\FlexibleMonitoringDashboard\\src\\FlexibleMonitoringDashboard.Client\\FlexibleMonitoringDashboard.Client.csproj",
         "packagesPath": "C:\\Users\\dieptnguyen\\.nuget\\packages\\",
-        "outputPath": "D:\\TempProjects\\FlexibleMonitoringDashboard\\src\\FlexibleMonitoringDashboard.Client\\obj\\",
+        "outputPath": "d:\\TempProjects\\FlexibleMonitoringDashboard\\src\\FlexibleMonitoringDashboard.Client\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
