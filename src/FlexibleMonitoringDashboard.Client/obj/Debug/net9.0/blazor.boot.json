@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "FlexibleMonitoringDashboard.Client",
   "resources": {
-    "hash": "sha256-X2L6/vQtQSbvgBhHHwExhQq96nrY4OjiaLcqvn55Nco=",
+    "hash": "sha256-l9J7bVUt56vX086R2AgZ4HhlTnszmXTLwRy6YzmHjhw=",
     "fingerprinting": {
       "Blazor-ApexCharts.mo0reimspa.wasm": "Blazor-ApexCharts.wasm",
       "Microsoft.AspNetCore.Authorization.ag393jzyei.wasm": "Microsoft.AspNetCore.Authorization.wasm",
@@ -209,8 +209,8 @@
       "icudt_CJK.tjcz0u77k5.dat": "icudt_CJK.dat",
       "icudt_EFIGS.tptq2av103.dat": "icudt_EFIGS.dat",
       "icudt_no_CJK.lfu7j35m59.dat": "icudt_no_CJK.dat",
-      "FlexibleMonitoringDashboard.Client.1qhnrc3362.wasm": "FlexibleMonitoringDashboard.Client.wasm",
-      "FlexibleMonitoringDashboard.Client.bfsbnwfh26.pdb": "FlexibleMonitoringDashboard.Client.pdb"
+      "FlexibleMonitoringDashboard.Client.g779up7czc.wasm": "FlexibleMonitoringDashboard.Client.wasm",
+      "FlexibleMonitoringDashboard.Client.qwv8t6ytd6.pdb": "FlexibleMonitoringDashboard.Client.pdb"
     },
     "jsModuleNative": {
       "dotnet.native.l1ds2rhypd.js": "sha256-CU8oL4L0VAwGe3hCyxZDy7keJq9dcsWED0JKqrvlUb4="
@@ -428,10 +428,10 @@
       "WindowsBase.p8fley4coh.wasm": "sha256-aRYzLqbGeHVYVMueB/ppfGVKTJ8jPRnWCHEGfFXiSG4=",
       "mscorlib.gr56bjb982.wasm": "sha256-rGm+fePHcRdNKLvNvl2ALv504HZc6ufZZqaXcOLo8HQ=",
       "netstandard.3vbiim3d7s.wasm": "sha256-j+YhS0xT+ZUStadRqdIFX5q3MfD09IJhCcEkJ3y3Kh0=",
-      "FlexibleMonitoringDashboard.Client.1qhnrc3362.wasm": "sha256-h6s1HWv0OUL1Isja2rCxfZ2aAcHWfzX320nfuVmERKE="
+      "FlexibleMonitoringDashboard.Client.g779up7czc.wasm": "sha256-vN5I36hA64JnvCTTfdtq/aRVn7yZ3UQ5wLvVUioNHuw="
     },
     "pdb": {
-      "FlexibleMonitoringDashboard.Client.bfsbnwfh26.pdb": "sha256-p4toobDfDo0IDU3JGqjf52vQOepL1YWgPsQecVJmLXM="
+      "FlexibleMonitoringDashboard.Client.qwv8t6ytd6.pdb": "sha256-isjPyYwVdV9cVkU5P/E2oRQH38HWQsS6Hiddux0XksU="
     }
   },
   "cacheBootResources": true,
