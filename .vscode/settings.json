@@ -4,6 +4,10 @@
         "/^git -C d:\\\\TempProjects\\\\FlexibleMonitoringDashboard rm -r --cached src/FlexibleMonitoringDashboard/bin src/FlexibleMonitoringDashboard/obj src/FlexibleMonitoringDashboard\\.Client/bin src/FlexibleMonitoringDashboard\\.Client/obj tests/FlexibleMonitoringDashboard\\.Tests/bin tests/FlexibleMonitoringDashboard\\.Tests/obj 2>&1$/": {
             "approve": true,
             "matchCommandLine": true
+        },
+        "/^Set-Content -Path \"d:\\\\TempProjects\\\\FlexibleMonitoringDashboard\\\\src\\\\FlexibleMonitoringDashboard\\.Client\\\\Layout\\\\MainLayout\\.razor\\.css\" -Value \"/\\* Keep minimal — MudBlazor handles most styling \\*/\"$/": {
+            "approve": true,
+            "matchCommandLine": true
         }
     }
 }

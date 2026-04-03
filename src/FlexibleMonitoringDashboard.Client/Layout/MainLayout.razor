@@ -1,23 +1,98 @@
-﻿@inherits LayoutComponentBase
+﻿@* src/FlexibleMonitoringDashboard.Client/Layout/MainLayout.razor *@
+@inherits LayoutComponentBase
+@using MudBlazor
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+<MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="_theme" />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+<MudLayout>
+    <MudAppBar Elevation="1" Dense="true">
+        <MudIcon Icon="@Icons.Material.Filled.Dashboard" Class="mr-2" />
+        <MudText Typo="Typo.h6" Class="mr-4">FlexBoard</MudText>
+        <MudText Typo="Typo.subtitle2" Class="d-none d-sm-flex" Style="opacity: 0.7;">
+            Flexible Monitoring Dashboard
+        </MudText>
+        <MudSpacer />
+
+        @* Toolbar buttons placeholder — child components will render here via CascadingValue *@
+        <div id="toolbar-actions">
+            @ToolbarContent
         </div>
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+        <MudIconButton Icon="@(_isDarkMode ? Icons.Material.Filled.LightMode : Icons.Material.Filled.DarkMode)"
+                       Color="MudBlazor.Color.Inherit"
+                       OnClick="ToggleTheme"
+                       title="@(_isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode")" />
+    </MudAppBar>
 
-<div id="blazor-error-ui" data-nosnippet>
-    An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">🗙</span>
-</div>
+    <MudMainContent Class="pt-16 px-4 pb-4">
+        <CascadingValue Value="this">
+            @Body
+        </CascadingValue>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    private bool _isDarkMode = false;
+    private RenderFragment? ToolbarContent { get; set; }
+
+    private MudTheme _theme = new MudTheme
+    {
+        PaletteLight = new PaletteLight
+        {
+            Primary = "#1976D2",
+            Secondary = "#FF9800",
+            AppbarBackground = "#1976D2",
+            AppbarText = "#FFFFFF",
+            Background = "#F5F5F5",
+            Surface = "#FFFFFF",
+            DrawerBackground = "#FFFFFF"
+        },
+        PaletteDark = new PaletteDark
+        {
+            Primary = "#90CAF9",
+            Secondary = "#FFB74D",
+            AppbarBackground = "#1E1E2E",
+            AppbarText = "#FFFFFF",
+            Background = "#121212",
+            Surface = "#1E1E2E",
+            DrawerBackground = "#1E1E2E"
+        },
+        Typography = new Typography
+        {
+            Default = new DefaultTypography
+            {
+                FontFamily = new[] { "Roboto", "Helvetica", "Arial", "sans-serif" }
+            }
+        }
+    };
+
+    private void ToggleTheme()
+    {
+        _isDarkMode = !_isDarkMode;
+    }
+
+    /// <summary>
+    /// Called by child components to register toolbar buttons.
+    /// </summary>
+    public void SetToolbarContent(RenderFragment content)
+    {
+        ToolbarContent = content;
+        StateHasChanged();
+    }
+
+    /// <summary>
+    /// Gets or sets dark mode. Used by child components.
+    /// </summary>
+    public bool IsDarkMode
+    {
+        get => _isDarkMode;
+        set
+        {
+            _isDarkMode = value;
+            StateHasChanged();
+        }
+    }
+}
