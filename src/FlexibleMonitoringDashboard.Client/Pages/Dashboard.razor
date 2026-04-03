@@ -86,6 +86,7 @@ else
 @inject DashboardStateService State
 @inject ConfigurationService ConfigService
 @inject ISnackbar Snackbar
+@inject IDialogService DialogService
 
 @code {
     protected override void OnInitialized()
@@ -98,10 +99,28 @@ else
         State.AddSection();
     }
 
-    private Task ImportConfig()
+    private async Task ImportConfig()
     {
-        // Implemented in UI-09 (ImportButton component)
-        return Task.CompletedTask;
+        if (State.IsDirty)
+        {
+            var confirm = await DialogService.ShowMessageBoxAsync(
+                "Unsaved Changes",
+                "You have unsaved changes. Importing a new configuration will replace the current dashboard. Continue?",
+                yesText: "Import Anyway",
+                cancelText: "Cancel");
+
+            if (confirm != true) return;
+        }
+
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Small,
+            FullWidth = true,
+            CloseButton = true
+        };
+
+        var dialog = await DialogService.ShowAsync<ImportDialog>("Import Configuration", options);
+        await dialog.Result;
     }
 
     private async Task ExportConfig()

@@ -38,9 +38,10 @@ public class ConfigurationService
 
         var json = SerializeConfig(config);
         var fileName = SanitizeFileName(config.Name) + ".json";
+        var base64 = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(json));
 
         // Trigger browser download via JS interop
-        await _jsRuntime.InvokeVoidAsync("dashboardInterop.downloadFile", fileName, json);
+        await _jsRuntime.InvokeVoidAsync("dashboardInterop.downloadFile", fileName, base64, "application/json");
     }
 
     /// <summary>
