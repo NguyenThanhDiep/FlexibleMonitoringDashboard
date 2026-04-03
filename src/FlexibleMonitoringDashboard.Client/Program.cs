@@ -12,7 +12,7 @@ builder.Services.AddScoped(sp =>
     new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
 // Client services (will be registered as tasks are completed)
-// builder.Services.AddScoped<DashboardStateService>();
+builder.Services.AddScoped<DashboardStateService>();
 // builder.Services.AddScoped<ConfigurationService>();
 builder.Services.AddScoped<ChartTypeRecommender>();
 builder.Services.AddScoped<DataProxyClient>();
