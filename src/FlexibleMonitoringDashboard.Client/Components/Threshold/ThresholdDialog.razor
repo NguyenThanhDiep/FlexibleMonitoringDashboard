@@ -1,0 +1,114 @@
+@* src/FlexibleMonitoringDashboard.Client/Components/Threshold/ThresholdDialog.razor *@
+@using FlexibleMonitoringDashboard.Client.Models
+@using FlexibleMonitoringDashboard.Client.Services
+@using MudBlazor.Utilities
+@inject DashboardStateService State
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <TitleContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center">
+            <MudIcon Icon="@Icons.Material.Filled.NotificationsActive" Class="mr-2" />
+            <MudText Typo="Typo.h6">Configure Threshold Alarm</MudText>
+        </MudStack>
+    </TitleContent>
+    <DialogContent>
+        <MudStack Spacing="3">
+            <MudText Typo="Typo.body2" Style="opacity: 0.7;">
+                Set a threshold to receive an alert when the chart value crosses it.
+            </MudText>
+
+            <MudSwitch @bind-Value="_enabled" Color="MudBlazor.Color.Primary" Label="Enable Threshold Alarm" />
+
+            @if (_enabled)
+            {
+                <MudNumericField T="double" @bind-Value="_value"
+                                 Label="Threshold Value"
+                                 Variant="Variant.Outlined"
+                                 Step="0.01" />
+
+                <MudSelect T="ThresholdDirection" @bind-Value="_direction"
+                           Label="Trigger When"
+                           Variant="Variant.Outlined">
+                    <MudSelectItem Value="ThresholdDirection.Above">
+                        Value goes ABOVE threshold
+                    </MudSelectItem>
+                    <MudSelectItem Value="ThresholdDirection.Below">
+                        Value goes BELOW threshold
+                    </MudSelectItem>
+                </MudSelect>
+
+                <MudTextField @bind-Value="_label"
+                              Label="Threshold Label"
+                              Variant="Variant.Outlined"
+                              Placeholder="e.g., Target Price" />
+
+                <MudColorPicker @bind-Value="_mudColor"
+                                Label="Alarm Color"
+                                Variant="Variant.Outlined"
+                                DisableAlpha="true" />
+            }
+        </MudStack>
+    </DialogContent>
+    <DialogActions>
+        @if (Widget.Threshold != null)
+        {
+            <MudButton Color="MudBlazor.Color.Error" OnClick="RemoveThreshold">Remove</MudButton>
+        }
+        <MudSpacer />
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="MudBlazor.Color.Primary" Variant="Variant.Filled" OnClick="Save">
+            Save
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [Parameter] public WidgetConfig Widget { get; set; } = null!;
+    [Parameter] public string SectionId { get; set; } = "";
+    [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = null!;
+
+    private bool _enabled;
+    private double _value;
+    private ThresholdDirection _direction = ThresholdDirection.Above;
+    private string _label = "Threshold";
+    private MudColor _mudColor = new("#FF0000");
+
+    protected override void OnInitialized()
+    {
+        if (Widget.Threshold != null)
+        {
+            _enabled = Widget.Threshold.Enabled;
+            _value = Widget.Threshold.Value;
+            _direction = Widget.Threshold.Direction;
+            _label = Widget.Threshold.Label;
+            _mudColor = new MudColor(Widget.Threshold.Color);
+        }
+    }
+
+    private void Save()
+    {
+        Widget.Threshold = new ThresholdConfig
+        {
+            Enabled = _enabled,
+            Value = _value,
+            Direction = _direction,
+            Label = _label,
+            Color = _mudColor.Value
+        };
+
+        State.UpdateWidget(SectionId, Widget);
+        Snackbar.Add("Threshold configured!", Severity.Success);
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    private void RemoveThreshold()
+    {
+        Widget.Threshold = null;
+        State.UpdateWidget(SectionId, Widget);
+        Snackbar.Add("Threshold removed.", Severity.Info);
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+}

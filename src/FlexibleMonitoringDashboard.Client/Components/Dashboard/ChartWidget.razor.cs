@@ -1,6 +1,7 @@
 // src/FlexibleMonitoringDashboard.Client/Components/Dashboard/ChartWidget.razor.cs
 using System.Text.Json;
 using ApexCharts;
+using FlexibleMonitoringDashboard.Client.Components.Threshold;
 using FlexibleMonitoringDashboard.Client.Models;
 using ChartType = FlexibleMonitoringDashboard.Client.Models.ChartType;
 using FlexibleMonitoringDashboard.Client.Services;
@@ -14,6 +15,7 @@ public partial class ChartWidget : IDisposable
     [Inject] private DataProxyClient ProxyClient { get; set; } = null!;
     [Inject] private DashboardStateService State { get; set; } = null!;
     [Inject] private ISnackbar Snackbar { get; set; } = null!;
+    [Inject] private IDialogService DialogService { get; set; } = null!;
 
     [Parameter] public WidgetConfig WidgetConfig { get; set; } = null!;
     [Parameter] public string SectionId { get; set; } = "";
@@ -268,6 +270,18 @@ public partial class ChartWidget : IDisposable
     private void EditWidget()
     {
         // TODO: Open edit dialog (re-use AddDataSourceDialog in edit mode)
+    }
+
+    private async Task ConfigureThreshold()
+    {
+        var parameters = new DialogParameters
+        {
+            { "Widget", WidgetConfig },
+            { "SectionId", SectionId }
+        };
+        var options = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true };
+        var dialog = await DialogService.ShowAsync<ThresholdDialog>("Threshold", parameters, options);
+        await dialog.Result;
     }
 
     private void ToggleSize()
