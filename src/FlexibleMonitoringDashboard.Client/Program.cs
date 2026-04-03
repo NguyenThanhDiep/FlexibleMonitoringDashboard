@@ -15,6 +15,6 @@ builder.Services.AddScoped(sp =>
 // builder.Services.AddScoped<DashboardStateService>();
 // builder.Services.AddScoped<ConfigurationService>();
 builder.Services.AddScoped<ChartTypeRecommender>();
-// builder.Services.AddScoped<DataProxyClient>();
+builder.Services.AddScoped<DataProxyClient>();
 
 await builder.Build().RunAsync();
