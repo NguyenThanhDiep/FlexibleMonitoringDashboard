@@ -1,0 +1,69 @@
+@* src/FlexibleMonitoringDashboard.Client/Components/DataSource/FieldSelector.razor *@
+@using FlexibleMonitoringDashboard.Client.Models
+
+<MudSelect T="string"
+           Value="SelectedField"
+           ValueChanged="OnFieldChanged"
+           Label="@Label"
+           Variant="Variant.Outlined"
+           Dense="true"
+           AnchorOrigin="Origin.BottomCenter">
+    <MudSelectItem T="string" Value="@("")">— None —</MudSelectItem>
+    @foreach (var field in FilteredFields)
+    {
+        <MudSelectItem T="string" Value="@field.Path">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                <MudChip T="string" Size="MudBlazor.Size.Small" Variant="Variant.Text"
+                         Color="@((MudBlazor.Color)GetTypeColor(field.FieldType))">
+                    @field.FieldType
+                </MudChip>
+                <MudText Typo="Typo.body2" Style="font-family: monospace;">
+                    @field.Path
+                </MudText>
+                @if (field.IsArray)
+                {
+                    <MudText Typo="Typo.caption" Style="opacity: 0.5;">
+                        [@field.ArrayLength]
+                    </MudText>
+                }
+            </MudStack>
+        </MudSelectItem>
+    }
+</MudSelect>
+
+@code {
+    [Parameter] public string Label { get; set; } = "Select Field";
+    [Parameter] public string? SelectedField { get; set; }
+    [Parameter] public EventCallback<string?> SelectedFieldChanged { get; set; }
+    [Parameter] public List<DetectedField> Fields { get; set; } = new();
+    [Parameter] public List<string>? AllowedTypes { get; set; }
+    [Parameter] public bool ArraysOnly { get; set; } = false;
+
+    private IEnumerable<DetectedField> FilteredFields
+    {
+        get
+        {
+            var filtered = Fields.AsEnumerable();
+            if (AllowedTypes != null && AllowedTypes.Count > 0)
+                filtered = filtered.Where(f => AllowedTypes.Contains(f.FieldType));
+            if (ArraysOnly)
+                filtered = filtered.Where(f => f.IsArray);
+            return filtered;
+        }
+    }
+
+    private async Task OnFieldChanged(string? value)
+    {
+        SelectedField = value;
+        await SelectedFieldChanged.InvokeAsync(value);
+    }
+
+    private static MudBlazor.Color GetTypeColor(string fieldType) => fieldType switch
+    {
+        "Number" => MudBlazor.Color.Primary,
+        "String" => MudBlazor.Color.Secondary,
+        "DateTime" => MudBlazor.Color.Tertiary,
+        "Boolean" => MudBlazor.Color.Info,
+        _ => MudBlazor.Color.Default
+    };
+}

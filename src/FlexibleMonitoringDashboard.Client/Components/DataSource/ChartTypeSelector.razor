@@ -1,0 +1,53 @@
+@* src/FlexibleMonitoringDashboard.Client/Components/DataSource/ChartTypeSelector.razor *@
+@using FlexibleMonitoringDashboard.Client.Models
+@using AppChartType = FlexibleMonitoringDashboard.Client.Models.ChartType
+
+<MudText Typo="Typo.subtitle2" Class="mb-2">@Label</MudText>
+
+<MudToggleGroup T="AppChartType"
+                @bind-Value="SelectedType"
+                Color="MudBlazor.Color.Primary"
+                CheckMark="true"
+                FixedContent="true">
+    @foreach (var option in ChartOptions)
+    {
+        <MudToggleItem T="AppChartType" Value="option.Type">
+            <MudStack AlignItems="AlignItems.Center" Spacing="0">
+                <MudIcon Icon="@option.Icon" Size="MudBlazor.Size.Small" />
+                <MudText Typo="Typo.caption">@option.DisplayName</MudText>
+            </MudStack>
+        </MudToggleItem>
+    }
+</MudToggleGroup>
+
+@if (!string.IsNullOrEmpty(Description))
+{
+    <MudText Typo="Typo.caption" Style="opacity: 0.6;" Class="mt-1">
+        @Description
+    </MudText>
+}
+
+@code {
+    [Parameter] public string Label { get; set; } = "Chart Type";
+
+    [Parameter] public AppChartType SelectedType { get; set; } = AppChartType.Line;
+    [Parameter] public EventCallback<AppChartType> SelectedTypeChanged { get; set; }
+
+    [Parameter] public string? RecommendedReason { get; set; }
+
+    private string? Description => RecommendedReason ??
+        ChartOptions.FirstOrDefault(o => o.Type == SelectedType)?.Description;
+
+    private static readonly List<ChartOption> ChartOptions = new()
+    {
+        new(AppChartType.Line, "Line", "Best for time series and trends", Icons.Material.Filled.ShowChart),
+        new(AppChartType.Bar, "Bar", "Best for comparing categories", Icons.Material.Filled.BarChart),
+        new(AppChartType.Area, "Area", "Line with filled area beneath", Icons.Material.Filled.AreaChart),
+        new(AppChartType.Pie, "Pie", "Proportional distribution", Icons.Material.Filled.PieChart),
+        new(AppChartType.Donut, "Donut", "Proportions with center space", Icons.Material.Filled.DonutLarge),
+        new(AppChartType.RadialBar, "Gauge", "Single KPI/value display", Icons.Material.Filled.Speed),
+        new(AppChartType.Scatter, "Scatter", "Correlation between two variables", Icons.Material.Filled.ScatterPlot),
+    };
+
+    private record ChartOption(AppChartType Type, string DisplayName, string Description, string Icon);
+}
