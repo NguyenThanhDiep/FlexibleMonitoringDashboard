@@ -40,6 +40,10 @@
         "/^dotnet test tests/FlexibleMonitoringDashboard\\.Tests/FlexibleMonitoringDashboard\\.Tests\\.csproj --filter \"FullyQualifiedName~Services\" 2>&1 \\| Select-String -Pattern \"passed\\|failed\\|error\\|FAIL\\|PASS\\|total\" $/": {
             "approve": true,
             "matchCommandLine": true
+        },
+        "/^cd d:\\\\TempProjects\\\\FlexibleMonitoringDashboard\\\\src\\\\FlexibleMonitoringDashboard ; dotnet run$/": {
+            "approve": true,
+            "matchCommandLine": true
         }
     }
 }

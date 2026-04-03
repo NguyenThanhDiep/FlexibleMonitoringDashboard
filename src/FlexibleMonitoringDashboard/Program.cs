@@ -2,6 +2,7 @@ using FlexibleMonitoringDashboard.Components;
 using FlexibleMonitoringDashboard.Endpoints;
 using FlexibleMonitoringDashboard.Services;
 using MudBlazor.Services;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,12 @@ builder.Services.AddHttpClient();
 // Application services
 builder.Services.AddSingleton<JsonSchemaAnalyzer>();
 builder.Services.AddScoped<ExternalApiService>();
+
+// Serialize enums as strings so client DTOs can deserialize them correctly
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 
 // CORS (for development)
 builder.Services.AddCors(options =>
