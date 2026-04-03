@@ -1,0 +1,339 @@
+@* src/FlexibleMonitoringDashboard.Client/Components/DataSource/AddDataSourceDialog.razor *@
+@using AppChartType = FlexibleMonitoringDashboard.Client.Models.ChartType
+@using MudColor = MudBlazor.Color
+@using MudSize = MudBlazor.Size
+@inject DataProxyClient ProxyClient
+@inject ChartTypeRecommender Recommender
+@inject DashboardStateService State
+
+<MudDialog>
+    <TitleContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center">
+            <MudIcon Icon="@Icons.Material.Filled.AddChart" Class="mr-2" />
+            <MudText Typo="Typo.h6">Add Chart</MudText>
+        </MudStack>
+    </TitleContent>
+    <DialogContent>
+        <MudStepper @bind-ActiveIndex="_activeStep" Linear="true" Color="MudColor.Primary">
+
+            @* Step 1: Enter URL *@
+            <MudStep Title="Data Source">
+                <MudStack Spacing="3">
+                    <MudText Typo="Typo.body2" Style="opacity: 0.7;">
+                        Paste any public JSON API URL. We'll auto-detect the data fields.
+                    </MudText>
+                    <MudTextField @bind-Value="_url"
+                                  Label="API URL"
+                                  Placeholder="https://api.example.com/data.json"
+                                  Variant="Variant.Outlined"
+                                  Adornment="Adornment.Start"
+                                  AdornmentIcon="@Icons.Material.Filled.Link"
+                                  HelperText="Example: https://api.open-meteo.com/v1/forecast?latitude=10.823&longitude=106.6296&hourly=temperature_2m"
+                                  Error="@(!string.IsNullOrEmpty(_urlError))"
+                                  ErrorText="@_urlError" />
+
+                    <MudButton Variant="Variant.Filled"
+                               Color="MudColor.Primary"
+                               OnClick="AnalyzeUrl"
+                               Disabled="_isAnalyzing"
+                               FullWidth="true"
+                               Size="MudSize.Large">
+                        @if (_isAnalyzing)
+                        {
+                            <MudProgressCircular Size="MudSize.Small" Indeterminate="true" Class="mr-2" />
+                            <span>Analyzing...</span>
+                        }
+                        else
+                        {
+                            <MudIcon Icon="@Icons.Material.Filled.Search" Class="mr-2" />
+                            <span>Analyze Data</span>
+                        }
+                    </MudButton>
+
+                    @if (_analyzeError != null)
+                    {
+                        <MudAlert Severity="Severity.Error" Dense="true">@_analyzeError</MudAlert>
+                    }
+                </MudStack>
+            </MudStep>
+
+            @* Step 2: Configure chart *@
+            <MudStep Title="Configure Chart">
+                <MudStack Spacing="3">
+                    @* Chart title and description *@
+                    <MudTextField @bind-Value="_title"
+                                  Label="Chart Title"
+                                  Variant="Variant.Outlined"
+                                  Required="true" />
+                    <MudTextField @bind-Value="_description"
+                                  Label="Description (optional)"
+                                  Variant="Variant.Outlined" />
+
+                    @* Chart type selector *@
+                    <ChartTypeSelector @bind-SelectedType="_selectedChartType"
+                                       Label="Chart Type"
+                                       RecommendedReason="@_recommendedReason" />
+
+                    @* Detected fields table *@
+                    <MudText Typo="Typo.subtitle2" Class="mt-2">Detected Fields</MudText>
+                    <MudTable Items="_detectedFields" Dense="true" Hover="true" Elevation="0">
+                        <HeaderContent>
+                            <MudTh>Use</MudTh>
+                            <MudTh>Field</MudTh>
+                            <MudTh>Type</MudTh>
+                            <MudTh>Array</MudTh>
+                            <MudTh>Role</MudTh>
+                            <MudTh>Sample</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd>
+                                <MudCheckBox T="bool" @bind-Value="context.IsSelected" Dense="true" />
+                            </MudTd>
+                            <MudTd>
+                                <MudText Typo="Typo.body2" Style="font-family: monospace;">
+                                    @context.Path
+                                </MudText>
+                            </MudTd>
+                            <MudTd>
+                                <MudChip T="string" Size="MudSize.Small" Variant="Variant.Text"
+                                         Color="@GetFieldColor(context.FieldType)">
+                                    @context.FieldType
+                                </MudChip>
+                            </MudTd>
+                            <MudTd>
+                                @if (context.IsArray)
+                                {
+                                    <MudText Typo="Typo.caption">[@context.ArrayLength]</MudText>
+                                }
+                            </MudTd>
+                            <MudTd>
+                                <MudSelect T="string" @bind-Value="context.Role"
+                                           Dense="true" Margin="Margin.Dense" Variant="Variant.Text">
+                                    <MudSelectItem Value="@("None")">—</MudSelectItem>
+                                    <MudSelectItem Value="@("XAxis")">X Axis</MudSelectItem>
+                                    <MudSelectItem Value="@("YAxis")">Y Axis</MudSelectItem>
+                                </MudSelect>
+                            </MudTd>
+                            <MudTd>
+                                <MudText Typo="Typo.caption"
+                                         Style="opacity: 0.6; max-width: 120px; overflow: hidden; text-overflow: ellipsis;">
+                                    @string.Join(", ", context.SampleValues.Take(3))
+                                </MudText>
+                            </MudTd>
+                        </RowTemplate>
+                    </MudTable>
+
+                    @* Widget size *@
+                    <MudText Typo="Typo.subtitle2" Class="mt-2">Widget Size</MudText>
+                    <MudSlider @bind-Value="_columnSpan" Min="3" Max="12" Step="1"
+                               Color="MudColor.Primary">
+                        @(_columnSpan) columns (@(GetColumnSpanLabel(_columnSpan)))
+                    </MudSlider>
+
+                    @* Refresh interval *@
+                    <MudTextField @bind-Value="_refreshInterval"
+                                  Label="Auto-refresh interval (seconds)"
+                                  InputType="InputType.Number"
+                                  Variant="Variant.Outlined"
+                                  HelperText="0 = no auto-refresh" />
+                </MudStack>
+            </MudStep>
+
+        </MudStepper>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        @if (_activeStep == 1)
+        {
+            <MudButton Color="MudColor.Primary"
+                       Variant="Variant.Filled"
+                       OnClick="AddWidget"
+                       Disabled="@(!CanAdd())">
+                Add Chart
+            </MudButton>
+        }
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [Parameter] public string SectionId { get; set; } = "";
+    [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = null!;
+
+    private int _activeStep = 0;
+
+    // Step 1
+    private string _url = "";
+    private string? _urlError;
+    private string? _analyzeError;
+    private bool _isAnalyzing;
+
+    // Step 2
+    private string _title = "";
+    private string? _description;
+    private AppChartType _selectedChartType = AppChartType.Line;
+    private int _columnSpan = 6;
+    private int _refreshInterval = 30;
+    private string? _recommendedReason;
+    private List<FieldSelection> _detectedFields = new();
+    private AnalyzeResponseDto? _analyzeResult;
+
+    private async Task AnalyzeUrl()
+    {
+        _urlError = null;
+        _analyzeError = null;
+
+        if (string.IsNullOrWhiteSpace(_url))
+        {
+            _urlError = "Please enter a URL.";
+            return;
+        }
+
+        if (!Uri.TryCreate(_url, UriKind.Absolute, out var uri) ||
+            (uri.Scheme != "http" && uri.Scheme != "https"))
+        {
+            _urlError = "Please enter a valid http:// or https:// URL.";
+            return;
+        }
+
+        _isAnalyzing = true;
+        StateHasChanged();
+
+        try
+        {
+            _analyzeResult = await ProxyClient.AnalyzeAsync(_url.Trim());
+
+            if (_analyzeResult?.Success != true)
+            {
+                _analyzeError = _analyzeResult?.Error ?? "Failed to analyze the URL.";
+                return;
+            }
+
+            // Convert DTOs to FieldSelection models with pre-assigned roles
+            _detectedFields = _analyzeResult.Fields.Select(f => new FieldSelection
+            {
+                Path = f.Path,
+                Name = f.Name,
+                FieldType = f.FieldType,
+                IsArray = f.IsArray,
+                ArrayLength = f.ArrayLength,
+                SampleValues = f.SampleValues,
+                IsSelected = f.Path == _analyzeResult.SuggestedXField ||
+                             _analyzeResult.SuggestedYFields.Contains(f.Path),
+                Role = f.Path == _analyzeResult.SuggestedXField ? "XAxis" :
+                       _analyzeResult.SuggestedYFields.Contains(f.Path) ? "YAxis" : "None"
+            }).ToList();
+
+            // Derive recommended chart type from server suggestion and field heuristics
+            AppChartType serverRecommended = Recommender.RecommendFromServerSuggestion(_analyzeResult.SuggestedChartType);
+            var analyzedFields = _analyzeResult.Fields.Select(f => new AnalyzedField
+            {
+                Path = f.Path,
+                Name = f.Name,
+                FieldType = f.FieldType,
+                IsArray = f.IsArray,
+                ArrayLength = f.ArrayLength,
+                SampleValues = f.SampleValues
+            }).ToList();
+            AppChartType fieldRecommended = Recommender.RecommendFromFields(analyzedFields);
+
+            // Prefer server suggestion when available, fall back to field heuristics
+            _selectedChartType = !string.IsNullOrWhiteSpace(_analyzeResult.SuggestedChartType)
+                ? serverRecommended
+                : fieldRecommended;
+
+            _recommendedReason = $"Recommended: {_selectedChartType} based on detected fields";
+
+            // Auto-generate title from URL host
+            _title = uri.Host
+                .Replace("api.", "")
+                .Replace("www.", "")
+                .Split('.').First()
+                .ToUpper() + " Data";
+
+            // Advance to configuration step
+            _activeStep = 1;
+        }
+        catch (Exception ex)
+        {
+            _analyzeError = $"Error: {ex.Message}";
+        }
+        finally
+        {
+            _isAnalyzing = false;
+            StateHasChanged();
+        }
+    }
+
+    private void AddWidget()
+    {
+        var mappings = new List<FieldMapping>();
+
+        foreach (var field in _detectedFields.Where(f => f.IsSelected))
+        {
+            if (field.Role != "XAxis" && field.Role != "YAxis")
+                continue;
+
+            var role = field.Role == "XAxis" ? FieldRole.XAxis : FieldRole.YAxis;
+
+            mappings.Add(new FieldMapping
+            {
+                FieldPath = field.Path,
+                Label = field.Name,
+                Role = role
+            });
+        }
+
+        var widget = new WidgetConfig
+        {
+            Title = _title,
+            Description = _description,
+            ChartType = _selectedChartType,
+            ColumnSpan = _columnSpan,
+            FieldMappings = mappings,
+            DataSource = new DataSourceConfig
+            {
+                Url = _url.Trim(),
+                RefreshIntervalSeconds = _refreshInterval
+            }
+        };
+
+        State.AddWidget(SectionId, widget);
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+
+    private bool CanAdd() =>
+        !string.IsNullOrWhiteSpace(_title) &&
+        _detectedFields.Any(f => f.IsSelected && f.Role == "YAxis");
+
+    private static string GetColumnSpanLabel(int span) => span switch
+    {
+        <= 4 => "Small",
+        <= 6 => "Medium",
+        <= 8 => "Large",
+        _ => "Full Width"
+    };
+
+    private static MudBlazor.Color GetFieldColor(string fieldType) => fieldType switch
+    {
+        "Number" => MudBlazor.Color.Primary,
+        "String" => MudBlazor.Color.Secondary,
+        "DateTime" => MudBlazor.Color.Tertiary,
+        "Boolean" => MudBlazor.Color.Info,
+        _ => MudBlazor.Color.Default
+    };
+
+    /// <summary>Detected field with selection state for the dialog UI.</summary>
+    public class FieldSelection
+    {
+        public string Path { get; set; } = "";
+        public string Name { get; set; } = "";
+        public string FieldType { get; set; } = "";
+        public bool IsArray { get; set; }
+        public int ArrayLength { get; set; }
+        public List<string> SampleValues { get; set; } = new();
+        public bool IsSelected { get; set; }
+        public string Role { get; set; } = "None"; // "None", "XAxis", "YAxis"
+    }
+}
