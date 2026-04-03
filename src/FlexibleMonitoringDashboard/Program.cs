@@ -1,4 +1,6 @@
 using FlexibleMonitoringDashboard.Components;
+using FlexibleMonitoringDashboard.Endpoints;
+using FlexibleMonitoringDashboard.Services;
 using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,7 +14,10 @@ builder.Services.AddMudServices();
 
 // HttpClient for external API calls
 builder.Services.AddHttpClient();
-builder.Services.AddScoped<FlexibleMonitoringDashboard.Services.ExternalApiService>();
+
+// Application services
+builder.Services.AddSingleton<JsonSchemaAnalyzer>();
+builder.Services.AddScoped<ExternalApiService>();
 
 // CORS (for development)
 builder.Services.AddCors(options =>
@@ -34,9 +39,10 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
+app.UseCors();
 
-// API endpoints (will be mapped in BE-04)
-// app.MapDataProxyEndpoints();
+// API endpoints
+app.MapDataProxyEndpoints();
 
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
