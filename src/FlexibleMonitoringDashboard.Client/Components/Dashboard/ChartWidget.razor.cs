@@ -2,6 +2,7 @@
 using System.Text.Json;
 using ApexCharts;
 using FlexibleMonitoringDashboard.Client.Components.Threshold;
+using FlexibleMonitoringDashboard.Client.Components.Correlation;
 using FlexibleMonitoringDashboard.Client.Models;
 using ChartType = FlexibleMonitoringDashboard.Client.Models.ChartType;
 using FlexibleMonitoringDashboard.Client.Services;
@@ -319,6 +320,17 @@ public partial class ChartWidget : IDisposable
         };
         var options = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true };
         var dialog = await DialogService.ShowAsync<ThresholdDialog>("Threshold", parameters, options);
+        await dialog.Result;
+    }
+
+    private async Task AddCorrelation()
+    {
+        var parameters = new DialogParameters
+        {
+            { "SectionId", SectionId }
+        };
+        var options = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true };
+        var dialog = await DialogService.ShowAsync<CorrelationDialog>("Cross-Source Correlation", parameters, options);
         await dialog.Result;
     }
 
