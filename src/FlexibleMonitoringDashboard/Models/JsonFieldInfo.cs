@@ -1,4 +1,6 @@
 // src/FlexibleMonitoringDashboard/Models/JsonFieldInfo.cs
+using System.Text.Json.Serialization;
+
 namespace FlexibleMonitoringDashboard.Models;
 
 /// <summary>
@@ -40,6 +42,7 @@ public class JsonFieldInfo
 /// <summary>
 /// Detected type of a JSON field.
 /// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum JsonFieldType
 {
     String,
