@@ -154,7 +154,7 @@ FlexBoard dashboards are stored and exchanged as JSON. This document describes e
 }
 ```
 
-### Open-Meteo Weather Line Chart
+### Open-Meteo Weather Line Chart (Ho Chi Minh City)
 
 ```json
 {
@@ -163,25 +163,27 @@ FlexBoard dashboards are stored and exchanged as JSON. This document describes e
   "sections": [
     {
       "id": "sec-weather",
-      "title": "Berlin Weather",
+      "title": "Ho Chi Minh Weather",
       "widgets": [
         {
           "id": "wgt-temp",
-          "title": "Hourly Temperature",
+          "title": "Hourly Weather",
           "chartType": "Line",
           "dataSource": {
             "id": "ds-meteo",
-            "url": "https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&hourly=temperature_2m&forecast_days=1",
-            "refreshIntervalSeconds": 600,
-            "jsonPath": "hourly"
+            "url": "https://api.open-meteo.com/v1/forecast?latitude=10.823&longitude=106.6296&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m,precipitation&forecast_days=7",
+            "refreshIntervalSeconds": 30
           },
           "fieldMappings": [
-            { "fieldPath": "time", "label": "Hour", "role": "XAxis" },
-            { "fieldPath": "temperature_2m", "label": "Temp (°C)", "role": "YAxis" }
+            { "fieldPath": "hourly.time", "label": "time", "role": "XAxis" },
+            { "fieldPath": "hourly.temperature_2m", "label": "temperature_2m", "role": "YAxis" },
+            { "fieldPath": "hourly.relative_humidity_2m", "label": "relative_humidity_2m", "role": "YAxis" },
+            { "fieldPath": "hourly.wind_speed_10m", "label": "wind_speed_10m", "role": "YAxis" },
+            { "fieldPath": "hourly.precipitation", "label": "precipitation", "role": "YAxis" }
           ],
-          "columnSpan": 12,
+          "columnSpan": 10,
           "threshold": {
-            "value": 30,
+            "value": 35,
             "direction": "Above",
             "color": "#FF5252",
             "label": "Heat Alert",
@@ -252,3 +254,9 @@ FlexBoard dashboards are stored and exchanged as JSON. This document describes e
 - `dataSource.refreshIntervalSeconds` must be `≥ 0`
 - `threshold.value` must be a finite number
 - `fieldMappings` must contain at least one entry for the chart to render
+
+---
+
+## Full Example Dashboard
+
+For a complete, ready-to-import dashboard configuration featuring weather data, country statistics, and cryptocurrency prices, see [`docs/examples/my-dashboard.json`](examples/my-dashboard.json).

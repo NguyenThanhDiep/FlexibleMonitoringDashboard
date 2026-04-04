@@ -37,7 +37,7 @@ and ApexCharts.
 
 1. Clone the repository
 2. `dotnet run --project src/FlexibleMonitoringDashboard`
-3. Open `https://localhost:5001` in your browser
+3. Open `http://localhost:5125` in your browser
 4. Add a section → Add a chart → Paste any JSON API URL → Done!
 
 ## Features

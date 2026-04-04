@@ -1,0 +1,148 @@
+{
+  "version": "1.0",
+  "name": "My Dashboard",
+  "sections": [
+    {
+      "id": "0d6317ab4f074966a569554c2bdaedec",
+      "title": "My Personal Board",
+      "widgets": [
+        {
+          "id": "5fe05508f7f54e428239d0a531db37da",
+          "title": "Ho Chi Minh Weather",
+          "chartType": "line",
+          "dataSource": {
+            "id": "55997ece66334c1dab319395730a4899",
+            "url": "https://api.open-meteo.com/v1/forecast?latitude=10.823\u0026longitude=106.6296\u0026hourly=temperature_2m,relative_humidity_2m,wind_speed_10m,precipitation\u0026forecast_days=7",
+            "refreshIntervalSeconds": 30
+          },
+          "fieldMappings": [
+            {
+              "fieldPath": "hourly.time",
+              "label": "time",
+              "role": "xAxis"
+            },
+            {
+              "fieldPath": "hourly.temperature_2m",
+              "label": "temperature_2m",
+              "role": "yAxis"
+            },
+            {
+              "fieldPath": "hourly.relative_humidity_2m",
+              "label": "relative_humidity_2m",
+              "role": "yAxis"
+            },
+            {
+              "fieldPath": "hourly.wind_speed_10m",
+              "label": "wind_speed_10m",
+              "role": "yAxis"
+            },
+            {
+              "fieldPath": "hourly.precipitation",
+              "label": "precipitation",
+              "role": "yAxis"
+            }
+          ],
+          "columnSpan": 10
+        },
+        {
+          "id": "a5b39696c58443ff83bbaba1ac7f9f86",
+          "title": "Ho Chi Minh Temperature (C)",
+          "chartType": "radialBar",
+          "dataSource": {
+            "id": "d9aabda0a6ab4585a938a8345766bf86",
+            "url": "https://api.open-meteo.com/v1/forecast?latitude=10.823\u0026longitude=106.6296\u0026current=temperature_2m\u0026temperature_unit=celsius",
+            "refreshIntervalSeconds": 30
+          },
+          "fieldMappings": [
+            {
+              "fieldPath": "current.temperature_2m",
+              "label": "temperature_2m",
+              "role": "yAxis"
+            }
+          ],
+          "columnSpan": 2
+        },
+        {
+          "id": "d6e7e6e8f39a45de9c23dbd226b7beee",
+          "title": "South-Eastern Population",
+          "chartType": "bar",
+          "dataSource": {
+            "id": "f4b985fc4ea242fcab440995f1e644f3",
+            "url": "https://restcountries.com/v3.1/subregion/South-Eastern%20Asia?fields=fifa,population",
+            "refreshIntervalSeconds": 30
+          },
+          "fieldMappings": [
+            {
+              "fieldPath": "population",
+              "label": "population",
+              "role": "yAxis"
+            },
+            {
+              "fieldPath": "fifa",
+              "label": "fifa",
+              "role": "xAxis"
+            }
+          ],
+          "columnSpan": 6
+        },
+        {
+          "id": "a9f0ebff1929417e8713e80d7239e2b1",
+          "title": "Bitcoin",
+          "chartType": "radialBar",
+          "dataSource": {
+            "id": "4e8dd5229ceb44418d6783150b11304d",
+            "url": "https://api.coingecko.com/api/v3/simple/price?vs_currencies=usd\u0026ids=bitcoin",
+            "refreshIntervalSeconds": 30
+          },
+          "fieldMappings": [
+            {
+              "fieldPath": "bitcoin.usd",
+              "label": "usd",
+              "role": "yAxis"
+            }
+          ],
+          "columnSpan": 2
+        },
+        {
+          "id": "df48ceb407874b8b9d294f962955022b",
+          "title": "Ethereum",
+          "chartType": "radialBar",
+          "dataSource": {
+            "id": "e73a03db1fa14e0b88d2fd7d69911083",
+            "url": "https://api.coingecko.com/api/v3/simple/price?vs_currencies=usd\u0026ids=ethereum",
+            "refreshIntervalSeconds": 30
+          },
+          "fieldMappings": [
+            {
+              "fieldPath": "ethereum.usd",
+              "label": "usd",
+              "role": "yAxis"
+            }
+          ],
+          "columnSpan": 2
+        },
+        {
+          "id": "7ffc6b9e4eed4072bb9cda065776766c",
+          "title": "Tether",
+          "chartType": "radialBar",
+          "dataSource": {
+            "id": "f8e2d1ee55d446ed86bbe2b034179e5e",
+            "url": "https://api.coingecko.com/api/v3/simple/price?vs_currencies=usd\u0026ids=tether",
+            "refreshIntervalSeconds": 30
+          },
+          "fieldMappings": [
+            {
+              "fieldPath": "tether.usd",
+              "label": "usd",
+              "role": "yAxis"
+            }
+          ],
+          "columnSpan": 2
+        }
+      ],
+      "isCollapsed": false
+    }
+  ],
+  "exportedAt": "2026-04-04T07:38:20.38Z",
+  "darkMode": false
+}

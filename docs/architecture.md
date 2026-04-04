@@ -65,7 +65,7 @@ FlexibleMonitoringDashboard.sln
 
 ## Tech Stack Rationale
 
-### Blazor WebAssembly (.NET 9)
+### Blazor WebAssembly (.NET 8)
 - Single language (C#) across frontend and backend eliminates context switching
 - Strong typing for configuration models shared between client and server logic
 - No JavaScript framework toolchain complexity (no Node, Webpack, etc.)
@@ -75,7 +75,7 @@ FlexibleMonitoringDashboard.sln
 - Production-ready Material Design component library for Blazor
 - Rich component set (dialogs, grids, drawers, themes) with minimal custom CSS
 - Built-in dark/light theme switching support
-- Active community and up-to-date .NET 9 support
+- Active community and up-to-date .NET 8 support
 
 ### Blazor-ApexCharts
 - Thin Blazor wrapper around the popular ApexCharts.js library

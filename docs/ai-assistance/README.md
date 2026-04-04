@@ -8,7 +8,7 @@ All AI conversation threads are stored in this folder.
 | # | Topic | File |
 |---|-------|------|
 | 01 | Master plan and task breakdown | [01-master-plan-and-breakdown-tasks.md](./01-master-plan-and-breakdown-tasks.md) |
-| 02 | Project scaffolding (.NET 9, Blazor WASM, solution structure) | [02-implement-01-project-scaffolding.md](./02-implement-01-project-scaffolding.md) |
+| 02 | Project scaffolding (.NET 8, Blazor WASM, solution structure) | [02-implement-01-project-scaffolding.md](./02-implement-01-project-scaffolding.md) |
 | 03 | Backend models (proxy/analyze DTOs) | [03-implement-BE-01.md](./03-implement-BE-01.md) |
 | 04 | External API service | [04-implement-BE-02.md](./04-implement-BE-02.md) |
 | 05 | JSON schema analyzer + URL validator | [05-implement-BE-03.md](./05-implement-BE-03.md) |

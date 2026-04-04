@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0) installed
+- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) installed
 - A modern browser (Chrome, Edge, Firefox, Safari)
 - Internet access (to reach public JSON APIs)
 
@@ -16,7 +16,7 @@ cd FlexibleMonitoringDashboard
 dotnet run --project src/FlexibleMonitoringDashboard
 ```
 
-Open `https://localhost:5001` in your browser. Accept the development certificate if prompted.
+Open `http://localhost:5125` in your browser.
 
 ### 2. First Launch
 
@@ -53,7 +53,10 @@ Click the chevron icon on the section header to toggle visibility of its charts.
 2. The **Add Data Source** dialog opens.
 
 ### Step 1 — Paste the API URL
-Enter any public JSON API URL. Example:
+Enter any public JSON API URL. Examples:
+```
+https://api.open-meteo.com/v1/forecast?latitude=10.823&longitude=106.6296&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m,precipitation&forecast_days=7
+```
 ```
 https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd
 ```

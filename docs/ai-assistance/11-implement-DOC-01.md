@@ -82,7 +82,8 @@ All 6 files created:
 | GitHub Actions CI | ci.yml |
 
 Notable adjustments from the task spec:
-- Used **.NET 9** throughout (matching the actual project) instead of .NET 8
+- Used **.NET 8** throughout (matching the actual project `net8.0` target framework)
+- The default launch profile uses `http://localhost:5125` (not HTTPS 5001)
 - README.md links all 10 existing thread files rather than placeholder entries
 - configuration-schema.md documents every field from the actual model classes (`DashboardConfig`, `SectionConfig`, `WidgetConfig`, `DataSourceConfig`, `FieldMapping`, `ThresholdConfig`, `CorrelationConfig`) with three concrete example configs
 
