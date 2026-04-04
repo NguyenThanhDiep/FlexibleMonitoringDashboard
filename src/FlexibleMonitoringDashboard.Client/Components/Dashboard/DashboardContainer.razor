@@ -9,7 +9,8 @@
         var isFirst = i == 0;
         var isLast = i == State.Config.Sections.Count - 1;
 
-        <DashboardSection SectionConfig="section"
+        <DashboardSection @key="section.Id"
+                          SectionConfig="section"
                           OnEdit="() => EditSection(section.Id)"
                           OnDelete="() => ConfirmDeleteSection(section.Id)"
                           OnMoveUp="() => State.MoveSection(section.Id, -1)"

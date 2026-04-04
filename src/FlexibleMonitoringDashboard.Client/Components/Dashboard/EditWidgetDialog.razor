@@ -1,0 +1,87 @@
+@* src/FlexibleMonitoringDashboard.Client/Components/Dashboard/EditWidgetDialog.razor *@
+@using AppChartType = FlexibleMonitoringDashboard.Client.Models.ChartType
+@using FlexibleMonitoringDashboard.Client.Models
+@using FlexibleMonitoringDashboard.Client.Services
+@inject DashboardStateService State
+
+<MudDialog>
+    <TitleContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center">
+            <MudIcon Icon="@Icons.Material.Filled.Edit" Class="mr-2" />
+            <MudText Typo="Typo.h6">Edit Widget</MudText>
+        </MudStack>
+    </TitleContent>
+    <DialogContent>
+        <MudStack Spacing="3">
+            <MudTextField @bind-Value="_title"
+                          Label="Title"
+                          Variant="Variant.Outlined"
+                          Required="true"
+                          RequiredError="Title is required." />
+            <MudTextField @bind-Value="_description"
+                          Label="Description"
+                          Variant="Variant.Outlined"
+                          Lines="2" />
+            <MudSelect T="AppChartType" @bind-Value="_chartType"
+                       Label="Chart Type"
+                       Variant="Variant.Outlined">
+                @foreach (AppChartType ct in Enum.GetValues(typeof(AppChartType)))
+                {
+                    <MudSelectItem T="AppChartType" Value="ct">@ct.ToString()</MudSelectItem>
+                }
+            </MudSelect>
+            <MudNumericField T="int" @bind-Value="_columnSpan"
+                             Label="Column Span (2–12)"
+                             Min="2" Max="12"
+                             Variant="Variant.Outlined" />
+            <MudNumericField T="int" @bind-Value="_refreshInterval"
+                             Label="Auto-refresh interval (seconds)"
+                             Min="0" Max="3600"
+                             Variant="Variant.Outlined"
+                             HelperText="Set 0 to disable auto-refresh." />
+        </MudStack>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="MudBlazor.Color.Primary"
+                   Variant="Variant.Filled"
+                   OnClick="Submit"
+                   Disabled="@string.IsNullOrWhiteSpace(_title)">
+            Save
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [Parameter] public WidgetConfig Widget { get; set; } = null!;
+    [Parameter] public string SectionId { get; set; } = "";
+    [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = null!;
+
+    private string _title = "";
+    private string? _description;
+    private AppChartType _chartType = AppChartType.Line;
+    private int _columnSpan = 6;
+    private int _refreshInterval = 30;
+
+    protected override void OnInitialized()
+    {
+        _title = Widget.Title;
+        _description = Widget.Description;
+        _chartType = Widget.ChartType;
+        _columnSpan = Widget.ColumnSpan;
+        _refreshInterval = Widget.DataSource.RefreshIntervalSeconds;
+    }
+
+    private void Submit()
+    {
+        Widget.Title = _title;
+        Widget.Description = string.IsNullOrWhiteSpace(_description) ? null : _description;
+        Widget.ChartType = _chartType;
+        Widget.ColumnSpan = _columnSpan;
+        Widget.DataSource.RefreshIntervalSeconds = _refreshInterval;
+        State.UpdateWidget(SectionId, Widget);
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+}

@@ -159,6 +159,7 @@ public partial class ChartWidget : IDisposable
         var current = root;
         foreach (var segment in dotPath.Split('.'))
         {
+            if (string.IsNullOrEmpty(segment)) continue; // skip empty segments from leading/trailing dots
             if (current.ValueKind == JsonValueKind.Object && current.TryGetProperty(segment, out var child))
             {
                 current = child;
@@ -174,6 +175,19 @@ public partial class ChartWidget : IDisposable
     private static List<string> ExtractStringValues(JsonElement root, string dotPath)
     {
         var results = new List<string>();
+
+        // Array of objects: extract the field from each element
+        if (root.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var item in root.EnumerateArray())
+            {
+                var field = NavigateToField(item, dotPath);
+                if (field != null)
+                    results.Add(field.Value.ToString());
+            }
+            return results;
+        }
+
         var element = NavigateToField(root, dotPath);
         if (element == null) return results;
 
@@ -193,6 +207,22 @@ public partial class ChartWidget : IDisposable
     private static List<double> ExtractDoubleValues(JsonElement root, string dotPath)
     {
         var results = new List<double>();
+
+        // Array of objects: extract the field from each element
+        if (root.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var item in root.EnumerateArray())
+            {
+                var field = NavigateToField(item, dotPath);
+                if (field == null) continue;
+                if (field.Value.ValueKind == JsonValueKind.Number && field.Value.TryGetDouble(out var d))
+                    results.Add(d);
+                else if (field.Value.ValueKind == JsonValueKind.String && double.TryParse(field.Value.GetString(), out var parsed))
+                    results.Add(parsed);
+            }
+            return results;
+        }
+
         var element = NavigateToField(root, dotPath);
         if (element == null) return results;
 
@@ -262,14 +292,22 @@ public partial class ChartWidget : IDisposable
         });
     }
 
-    private void DeleteWidget()
+    private Task DeleteWidget()
     {
         State.RemoveWidget(SectionId, WidgetConfig.Id);
+        return Task.CompletedTask;
     }
 
-    private void EditWidget()
+    private async Task EditWidget()
     {
-        // TODO: Open edit dialog (re-use AddDataSourceDialog in edit mode)
+        var parameters = new DialogParameters
+        {
+            { "Widget", WidgetConfig },
+            { "SectionId", SectionId }
+        };
+        var options = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true };
+        var dialog = await DialogService.ShowAsync<EditWidgetDialog>("Edit Widget", parameters, options);
+        await dialog.Result;
     }
 
     private async Task ConfigureThreshold()
@@ -284,12 +322,13 @@ public partial class ChartWidget : IDisposable
         await dialog.Result;
     }
 
-    private void ToggleSize()
+    private Task ToggleSize()
     {
         _isExpanded = !_isExpanded;
         var newSpan = _isExpanded ? 12 : 6;
         WidgetConfig.ColumnSpan = newSpan;
         State.UpdateWidget(SectionId, WidgetConfig);
+        return Task.CompletedTask;
     }
 
     private SeriesType GetApexSeriesType() => WidgetConfig.ChartType switch

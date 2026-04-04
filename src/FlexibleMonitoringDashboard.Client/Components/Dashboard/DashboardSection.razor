@@ -4,6 +4,7 @@
 @inject DashboardStateService State
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
+@implements IDisposable
 
 @* Section divider and header *@
 <MudDivider Class="mt-4 mb-2" />
@@ -93,7 +94,7 @@ else if (!_isCollapsed)
     <MudGrid Spacing="3" Class="mt-2">
         @foreach (var widget in SectionConfig.Widgets)
         {
-            <MudItem xs="12" sm="@GetSmBreakpoint(widget.ColumnSpan)" md="@widget.ColumnSpan">
+            <MudItem @key="widget.Id" xs="12" sm="@GetSmBreakpoint(widget.ColumnSpan)" md="@widget.ColumnSpan">
                 <ChartWidget WidgetConfig="widget"
                              SectionId="SectionConfig.Id" />
             </MudItem>
@@ -122,6 +123,18 @@ else if (!_isCollapsed)
     [Parameter] public EventCallback OnMoveDown { get; set; }
     [Parameter] public bool IsFirst { get; set; }
     [Parameter] public bool IsLast { get; set; }
+
+    protected override void OnInitialized()
+    {
+        State.OnStateChanged += OnStateChangedHandler;
+    }
+
+    private async void OnStateChangedHandler() => await InvokeAsync(StateHasChanged);
+
+    public void Dispose()
+    {
+        State.OnStateChanged -= OnStateChangedHandler;
+    }
 
     private bool _isCollapsed = false;
     private bool _isEditingTitle = false;

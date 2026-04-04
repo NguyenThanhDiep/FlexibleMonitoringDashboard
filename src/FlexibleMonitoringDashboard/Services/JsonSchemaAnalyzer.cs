@@ -68,8 +68,17 @@ public class JsonSchemaAnalyzer
         if (objectArrayField != null)
         {
             // Look for child fields of this array
-            var childPrefix = objectArrayField.Path + ".";
-            var childFields = fields.Where(f => f.Path.StartsWith(childPrefix)).ToList();
+            List<JsonFieldInfo> childFields;
+            if (string.IsNullOrEmpty(objectArrayField.Path))
+            {
+                // Root-level array of objects: children have simple paths with no dot
+                childFields = fields.Where(f => !string.IsNullOrEmpty(f.Path) && !f.Path.Contains('.')).ToList();
+            }
+            else
+            {
+                var childPrefix = objectArrayField.Path + ".";
+                childFields = fields.Where(f => f.Path.StartsWith(childPrefix)).ToList();
+            }
 
             var childCategory = childFields.FirstOrDefault(f =>
                 f.FieldType == JsonFieldType.String || f.FieldType == JsonFieldType.DateTime);
@@ -223,7 +232,9 @@ public class JsonSchemaAnalyzer
                 // Analyze the first object's fields as child fields
                 foreach (var property in firstElement.EnumerateObject())
                 {
-                    var childPath = $"{currentPath}.{property.Name}";
+                    var childPath = string.IsNullOrEmpty(currentPath)
+                        ? property.Name
+                        : $"{currentPath}.{property.Name}";
 
                     // Collect sample values from all array elements for this property
                     var childSamples = array.EnumerateArray()
